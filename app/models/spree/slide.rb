@@ -1,4 +1,5 @@
 class Spree::Slide < ActiveRecord::Base
+  acts_as_paranoid
 
   has_and_belongs_to_many :slide_locations,
                           class_name: 'Spree::SlideLocation',
