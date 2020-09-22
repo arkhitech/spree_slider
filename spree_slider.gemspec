@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   spree_version = '>= 3.1.0'
   s.add_dependency 'spree_core', spree_version
   s.add_dependency 'spree_backend', spree_version
-  s.add_dependency 'paranoia', spree_version
+  s.add_dependency 'paranoia', '>= 2.4.2'
 
   s.add_development_dependency 'appraisal'
   s.add_development_dependency 'factory_girl'
