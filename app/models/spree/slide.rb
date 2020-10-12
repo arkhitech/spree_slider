@@ -5,11 +5,15 @@ class Spree::Slide < ActiveRecord::Base
                           class_name: 'Spree::SlideLocation',
                           join_table: 'spree_slide_slide_locations'
 
-  has_attached_file :image,
-                    url: '/spree/slides/:id/:style/:basename.:extension',
-                    path: ':rails_root/public/spree/slides/:id/:style/:basename.:extension',
-                    convert_options: { all: '-strip -auto-orient -colorspace sRGB' }
-  validates_attachment :image, content_type: { content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"] }
+  if !Rails.application.config.use_paperclip
+    has_one_attached :image
+  else                      
+    has_attached_file :image,
+                      url: '/spree/slides/:id/:style/:basename.:extension',
+                      path: ':rails_root/public/spree/slides/:id/:style/:basename.:extension',
+                      convert_options: { all: '-strip -auto-orient -colorspace sRGB' }
+    validates_attachment :image, content_type: { content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"] }
+  end
 
   scope :published, -> { where(published: true).order('position ASC') }
   scope :location, -> (location) { joins(:slide_locations).where('spree_slide_locations.name = ?', location) }
@@ -30,6 +34,10 @@ class Spree::Slide < ActiveRecord::Base
   end
 
   def slide_image
-    !image.file? && product.present? && product.images.any? ? product.images.first.attachment : image
+    if !Rails.application.config.use_paperclip
+      !image.attached? && product.present? && product.images.any? ? product.images.first.attachment : image
+    else
+      !image.file? && product.present? && product.images.any? ? product.images.first.attachment : image
+    end
   end
 end
