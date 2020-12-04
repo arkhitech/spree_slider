@@ -56,7 +56,7 @@
 
   <div class="col-md-6">
     <%= f.field_container :image do %>
-      <% if f.object.image? %>
+      <% if Rails.application.config.use_paperclip && f.object.image? || f.object.image.attached? %>
         <p>
           <%= label_tag t(:preview) %>
           <br>
